@@ -1,6 +1,6 @@
 ---
 name: knowledge-base
-description: "Search, read, and edit the user's personal knowledge base at \$KNOWLEDGE_BASE. Load when the user asks about something that might be documented there, when they reference a topic you should look up, or when you need to save/find knowledge across sessions. Replaces the OpenKnowledge MCP server and Hindsight with direct shell-based access."
+description: "Search, read, and edit the user's personal knowledge base at $KNOWLEDGE_BASE. Load when the user asks about something that might be documented there, when they reference a topic you should look up, or when you need to save/find knowledge across sessions. Replaces the OpenKnowledge MCP server and Hindsight with direct shell-based access."
 ---
 
 # Knowledge Base — shell-based access
