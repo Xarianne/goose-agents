@@ -60,4 +60,30 @@ chmod +x install.sh
 
 This creates symlinks from `~/.agents/` and `~/.config/goose/skills/` into the repo. Edits in the repo take effect immediately.
 
+## Configuration: provider and model
+
+Each recipe YAML has a `settings` block at the bottom with a hardcoded provider and model:
+
+```yaml
+settings:
+  goose_provider: ollama_cloud    # ← change this
+  goose_model: gemma4:31b         # ← change this
+  max_turns: 30
+```
+
+You need to change these to match **your** Goose provider and model. The easiest way:
+
+1. **Via the Goose GUI** — open Goose, go to Settings → Providers, set your provider and model. The agents will inherit your default.
+2. **Manually** — edit the YAML files directly in `~/GitHub/goose-agents/recipes/` (the symlinks mean changes take effect immediately).
+
+The current values are:
+
+| Recipe | Provider | Model |
+|--------|----------|-------|
+| `echo` | `ollama_cloud` | `gemma4:31b` |
+| `knowledge-curator` | `ollama_cloud` | `gemma4:31b` |
+| `search` | `ollama_cloud` | `deepseek-v4-flash` |
+
+If you use a local setup (Ollama, LM Studio), change `ollama_cloud` to your local provider name as configured in Goose.
+
 
