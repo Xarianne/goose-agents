@@ -73,6 +73,10 @@ Each recipe YAML has a `settings` block with a provider and model. Change these 
 3. Select your **Provider** and **Model** from the dropdowns
 4. Save
 
+#### Local models
+
+If you run models locally (Ollama, LM Studio), select your local provider in the dropdown (e.g. `ollama` or `lmstudio`) and pick the model you have pulled. No API keys needed — the agents will call your local endpoint instead of a cloud API.
+
 ### Manually (edit the YAML)
 
 ```yaml
@@ -89,7 +93,3 @@ settings:
 | `echo` | `ollama_cloud` | `gemma4:31b` |
 | `knowledge-curator` | `ollama_cloud` | `gemma4:31b` |
 | `search` | `ollama_cloud` | `deepseek-v4-flash` |
-
-### Local models
-
-If you run models locally (Ollama, LM Studio), select your local provider in the dropdown (e.g. `ollama` or `lmstudio`) and pick the model you have pulled. No API keys needed — the agents will call your local endpoint instead of a cloud API.
