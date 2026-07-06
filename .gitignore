@@ -1,0 +1,23 @@
+# Secrets — never commit these
+.env
+.env.*
+*.pem
+*.key
+*secret*
+*token*
+*credential*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor junk
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.code-workspace
+
+# Symlinks (install.sh creates these locally)
+# Don't track the actual symlink targets — they're in ~/.agents/ and ~/.config/goose/
