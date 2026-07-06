@@ -20,10 +20,39 @@ goose-agents/
 │   └── agent-reach/      #   Platform-specific search — supplement for search agent
 │       ├── SKILL.md
 │       └── references/   #   Twitter/X, Reddit, XiaoHongShu, GitHub, YouTube, etc.
-├── install.sh            # Symlinks everything into place
+├── install.sh            # Copies everything into place
 ├── .gitignore
 └── README.md
 ```
+
+## Before installing: set your knowledge base path
+
+Several files contain the placeholder `/path/to/knowledge-base`. You need to replace it with your actual knowledge base path before running install.
+
+For example, if your knowledge base lives at `/home/you/Nextcloud/Obsidian/Knowledge`:
+
+```bash
+cd goose-agents
+sed -i 's|/path/to/knowledge-base|/home/you/Nextcloud/Obsidian/Knowledge|g' \
+  agents/*.yaml recipes/*.yaml skills/knowledge-base/SKILL.md
+```
+
+This replaces the placeholder in all agent configs and the knowledge-base skill. The agent-reach skill has no path references, so it doesn't need changing.
+
+## Installation
+
+```bash
+git clone https://github.com/Xarianne/goose-agents.git ~/GitHub/goose-agents
+cd ~/GitHub/goose-agents
+
+# Set your knowledge base path (see above)
+sed -i 's|/path/to/knowledge-base|YOUR_KB_PATH|g' agents/*.yaml recipes/*.yaml skills/knowledge-base/SKILL.md
+
+chmod +x install.sh
+./install.sh
+```
+
+This **copies** files into `~/.agents/` and `~/.config/goose/skills/` (not symlinks). After editing repo files, re-run `./install.sh` to update the installed copies.
 
 ## Agents
 
@@ -33,57 +62,25 @@ goose-agents/
 | **Knowledge Curator** | Writes/edits KB docs with proper frontmatter, citations, linking, log discipline | Any KB write or restructure |
 | **Search** | Web research via SearXNG (privacy) + Tavily (AI-powered) | Any web search need |
 
-## Prerequisites
-
-Set `KNOWLEDGE_BASE` to the path of your knowledge base (markdown files the agents can search and write to):
-
-```bash
-# bash/zsh
-echo 'export KNOWLEDGE_BASE=~/Nextcloud/Obsidian/Knowledge' >> ~/.bashrc
-
-# fish
-echo 'set -Ux KNOWLEDGE_BASE ~/Nextcloud/Obsidian/Knowledge' >> ~/.config/fish/config.fish
-```
-
-Replace the path with wherever you keep your markdown notes. All agents reference `$KNOWLEDGE_BASE`.
-
-**After setting the variable, restart your shell session** (close and reopen your terminal, or run `exec $SHELL`). You'll also need to **restart Goose** — the `goosed` daemon only picks up environment variables at launch, not from your shell config after the fact.
-
-## Installation
-
-```bash
-git clone https://github.com/yourname/goose-agents.git ~/GitHub/goose-agents
-cd ~/GitHub/goose-agents
-chmod +x install.sh
-./install.sh
-```
-
-This creates symlinks from `~/.agents/` and `~/.config/goose/skills/` into the repo. Edits in the repo take effect immediately.
-
 ## Configuration: provider and model
 
-Each recipe YAML has a `settings` block at the bottom with a hardcoded provider and model. You need to change these to match **your** Goose provider and model. There are two ways:
+Each recipe YAML has a `settings` block with a provider and model. Change these to match your Goose setup. Edit the files in the repo, then re-run `./install.sh`.
 
 ### Via the Goose GUI
 
 1. Open Goose and go to the **Recipes** tab
 2. Click **Edit** on the recipe you want to change
-3. In the **Provider** dropdown, select your provider (e.g. `ollama`, `lmstudio`, `openai`, `ollama_cloud`, `gemini_oauth`, etc.)
-4. In the **Model** dropdown, select the model you want to use
-5. Save — changes take effect immediately
+3. Select your **Provider** and **Model** from the dropdowns
+4. Save
 
 ### Manually (edit the YAML)
 
-Each recipe YAML has a `settings` block at the bottom with a hardcoded provider and model:
-
 ```yaml
 settings:
-  goose_provider: ollama_cloud    # ← change this
-  goose_model: gemma4:31b         # ← change this
+  goose_provider: ollama_cloud    # change this
+  goose_model: gemma4:31b         # change this
   max_turns: 30
 ```
-
-Edit the files directly in `~/GitHub/goose-agents/recipes/` — the symlinks mean changes take effect immediately.
 
 ### Current values (for reference)
 
@@ -96,5 +93,3 @@ Edit the files directly in `~/GitHub/goose-agents/recipes/` — the symlinks mea
 ### Local models
 
 If you run models locally (Ollama, LM Studio), select your local provider in the dropdown (e.g. `ollama` or `lmstudio`) and pick the model you have pulled. No API keys needed — the agents will call your local endpoint instead of a cloud API.
-
-

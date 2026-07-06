@@ -1,11 +1,17 @@
 #!/bin/bash
-# install.sh — Symlink goose-agents repo into place
+# install.sh — Copy goose-agents into place
 #
 # Usage: ./install.sh
 # Run from the repo root after cloning.
 #
-# Creates symlinks so edits in the repo take effect immediately.
-# Existing files at the target paths will be backed up with a .bak suffix.
+# BEFORE RUNNING: Search for "/path/to/knowledge-base" in all YAML and
+# SKILL.md files and replace it with your actual knowledge base path.
+# For example:
+#   sed -i 's|/path/to/knowledge-base|/home/you/Notes|g' agents/*.yaml recipes/*.yaml skills/knowledge-base/SKILL.md
+#
+# This script copies (not symlinks) the files into ~/.agents/ and
+# ~/.config/goose/skills/. After editing repo files, re-run this
+# script to update the installed copies.
 
 set -euo pipefail
 
@@ -20,9 +26,12 @@ for f in "$REPO_DIR"/agents/*.yaml; do
   if [ -f "$target" ] && [ ! -L "$target" ]; then
     mv "$target" "$target.bak"
     echo "  backed up existing $target → $target.bak"
+  elif [ -L "$target" ]; then
+    rm "$target"
+    echo "  removed old symlink $target"
   fi
-  ln -sf "$f" "$target"
-  echo "  symlinked agents/$name"
+  cp "$f" "$target"
+  echo "  copied agents/$name"
 done
 
 # --- Recipes ---
@@ -33,9 +42,12 @@ for f in "$REPO_DIR"/recipes/*.yaml; do
   if [ -f "$target" ] && [ ! -L "$target" ]; then
     mv "$target" "$target.bak"
     echo "  backed up existing $target → $target.bak"
+  elif [ -L "$target" ]; then
+    rm "$target"
+    echo "  removed old symlink $target"
   fi
-  ln -sf "$f" "$target"
-  echo "  symlinked recipes/$name"
+  cp "$f" "$target"
+  echo "  copied recipes/$name"
 done
 
 # --- knowledge-base skill ---
@@ -44,11 +56,14 @@ target="$HOME/.config/goose/skills/knowledge-base/SKILL.md"
 if [ -f "$target" ] && [ ! -L "$target" ]; then
   mv "$target" "$target.bak"
   echo "  backed up existing $target → $target.bak"
+elif [ -L "$target" ]; then
+  rm "$target"
+  echo "  removed old symlink $target"
 fi
-ln -sf "$REPO_DIR/skills/knowledge-base/SKILL.md" "$target"
-echo "  symlinked skills/knowledge-base/SKILL.md"
+cp "$REPO_DIR/skills/knowledge-base/SKILL.md" "$target"
+echo "  copied skills/knowledge-base/SKILL.md"
 
-# --- agent-reach skill ---
+# --- agent-reach skill (no path substitution needed) ---
 mkdir -p ~/.agents/skills/agent-reach/references
 for f in "$REPO_DIR"/skills/agent-reach/*.md; do
   name="$(basename "$f")"
@@ -72,7 +87,9 @@ for f in "$REPO_DIR"/skills/agent-reach/references/*.md; do
 done
 
 echo ""
-echo "✅ Done. All agents, recipes, and skills are symlinked."
-echo "   Edits in $REPO_DIR take effect immediately."
+echo "Done. Files copied to ~/.agents/ and ~/.config/goose/skills/."
+echo "The agent-reach skill uses symlinks (no paths to customize)."
 echo ""
-echo "   To verify: delegate(source: \"echo\") should work in Goose."
+echo "NOTE: After editing repo files, re-run ./install.sh to update installed copies."
+echo ""
+echo "To verify: delegate(source: \"echo\") should work in Goose."

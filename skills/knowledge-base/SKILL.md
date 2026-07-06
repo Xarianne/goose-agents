@@ -1,6 +1,6 @@
 ---
 name: knowledge-base
-description: "Search, read, and edit the user's personal knowledge base at $KNOWLEDGE_BASE. Load when the user asks about something that might be documented there, when they reference a topic you should look up, or when you need to save/find knowledge across sessions. Replaces the OpenKnowledge MCP server and Hindsight with direct shell-based access."
+description: "Search, read, and edit the user's personal knowledge base at /path/to/knowledge-base. Load when the user asks about something that might be documented there, when they reference a topic you should look up, or when you need to save/find knowledge across sessions. Replaces the OpenKnowledge MCP server and Hindsight with direct shell-based access."
 ---
 
 # Knowledge Base — shell-based access
@@ -8,8 +8,10 @@ description: "Search, read, and edit the user's personal knowledge base at $KNOW
 The user maintains a personal knowledge base (KB) of 159+ markdown files at:
 
 ```
-$KNOWLEDGE_BASE
+/path/to/knowledge-base
 ```
+
+<!-- NOTE: Replace /path/to/knowledge-base with your actual knowledge base path. See README. -->
 
 This is a three-layer source-grounded knowledge base. You have full shell and file access via the `developer` extension — use it to search, read, and edit these files directly. No MCP server required.
 
@@ -38,22 +40,22 @@ Use `ripgrep` (`rg`) for fast keyword search across all markdown files:
 
 ```bash
 # Search everything (excludes .git, node_modules, .ok, .obsidian)
-rg -i --type md "search term" $KNOWLEDGE_BASE -g '!{.ok,.obsidian,.claude,.cursor,.codex,.opencode,.agents,node_modules}'
+rg -i --type md "search term" /path/to/knowledge-base -g '!{.ok,.obsidian,.claude,.cursor,.codex,.opencode,.agents,node_modules}'
 
 # Search only articles (canonical knowledge)
-rg -i --type md "search term" $KNOWLEDGE_BASE/articles
+rg -i --type md "search term" /path/to/knowledge-base/articles
 
 # Search only research
-rg -i --type md "search term" $KNOWLEDGE_BASE/research
+rg -i --type md "search term" /path/to/knowledge-base/research
 
 # List all files in a section
-find $KNOWLEDGE_BASE/articles -name '*.md' | sort
+find /path/to/knowledge-base/articles -name '*.md' | sort
 
 # Read a specific file
 cat "/path/to/file.md"
 
 # Find files by name pattern
-find $KNOWLEDGE_BASE -name '*keyword*' -name '*.md'
+find /path/to/knowledge-base -name '*keyword*' -name '*.md'
 ```
 
 When the user asks a question that might be answered by existing docs, search first. Read the relevant files, then answer in chat with inline references to the source files you used (e.g., "According to [articles/Linux/Fedora/Fedora.md](articles/Linux/Fedora/Fedora.md)...").
@@ -63,8 +65,8 @@ When the user asks a question that might be answered by existing docs, search fi
 At the start of a session or when you need background, read:
 
 ```bash
-cat $KNOWLEDGE_BASE/context/user-profile.md
-cat $KNOWLEDGE_BASE/context/tasks.md
+cat /path/to/knowledge-base/context/user-profile.md
+cat /path/to/knowledge-base/context/tasks.md
 ```
 
 These contain the user's profile, environment details, and current task list.
