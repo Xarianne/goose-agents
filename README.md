@@ -47,6 +47,8 @@ echo 'set -Ux KNOWLEDGE_BASE ~/Nextcloud/Obsidian/Knowledge' >> ~/.config/fish/c
 
 Replace the path with wherever you keep your markdown notes. All agents reference `$KNOWLEDGE_BASE`.
 
+**After setting the variable, restart your shell session** (close and reopen your terminal, or run `exec $SHELL`). You'll also need to **restart Goose** — the `goosed` daemon only picks up environment variables at launch, not from your shell config after the fact.
+
 ## Installation
 
 ```bash
