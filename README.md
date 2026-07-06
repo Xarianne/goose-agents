@@ -62,6 +62,18 @@ This creates symlinks from `~/.agents/` and `~/.config/goose/skills/` into the r
 
 ## Configuration: provider and model
 
+Each recipe YAML has a `settings` block at the bottom with a hardcoded provider and model. You need to change these to match **your** Goose provider and model. There are two ways:
+
+### Via the Goose GUI
+
+1. Open Goose and go to the **Recipes** tab
+2. Click **Edit** on the recipe you want to change
+3. In the **Provider** dropdown, select your provider (e.g. `ollama`, `lmstudio`, `openai`, `ollama_cloud`, `gemini_oauth`, etc.)
+4. In the **Model** dropdown, select the model you want to use
+5. Save — changes take effect immediately
+
+### Manually (edit the YAML)
+
 Each recipe YAML has a `settings` block at the bottom with a hardcoded provider and model:
 
 ```yaml
@@ -71,12 +83,9 @@ settings:
   max_turns: 30
 ```
 
-You need to change these to match **your** Goose provider and model. The easiest way:
+Edit the files directly in `~/GitHub/goose-agents/recipes/` — the symlinks mean changes take effect immediately.
 
-1. **Via the Goose GUI** — open Goose, go to Settings → Providers, set your provider and model. The agents will inherit your default.
-2. **Manually** — edit the YAML files directly in `~/GitHub/goose-agents/recipes/` (the symlinks mean changes take effect immediately).
-
-The current values are:
+### Current values (for reference)
 
 | Recipe | Provider | Model |
 |--------|----------|-------|
@@ -84,6 +93,8 @@ The current values are:
 | `knowledge-curator` | `ollama_cloud` | `gemma4:31b` |
 | `search` | `ollama_cloud` | `deepseek-v4-flash` |
 
-If you use a local setup (Ollama, LM Studio), change `ollama_cloud` to your local provider name as configured in Goose.
+### Local models
+
+If you run models locally (Ollama, LM Studio), select your local provider in the dropdown (e.g. `ollama` or `lmstudio`) and pick the model you have pulled. No API keys needed — the agents will call your local endpoint instead of a cloud API.
 
 
