@@ -2,29 +2,6 @@
 
 Personal Goose agent definitions — recipes, agents, and skills for the [Goose](https://github.com/block/goose) AI agent framework.
 
-## What's here
-
-```
-goose-agents/
-├── agents/               # Agent definitions (discoverable via delegate)
-│   ├── echo.yaml         #   Learning agent — captures experiences, consolidates judgment
-│   ├── knowledge-curator.yaml  # KB writer — frontmatter, citations, log discipline
-│   └── search.yaml       # Web research — SearXNG + Tavily
-├── recipes/              # Recipe definitions (same content, alternate discovery path)
-│   ├── echo.yaml
-│   ├── knowledge-curator.yaml
-│   └── search.yaml
-├── skills/               # Goose skills
-│   ├── knowledge-base/   #   Shell-based KB search (replaces Hindsight/OpenKnowledge MCP)
-│   │   └── SKILL.md
-│   └── agent-reach/      #   Platform-specific search — supplement for search agent
-│       ├── SKILL.md
-│       └── references/   #   Twitter/X, Reddit, XiaoHongShu, GitHub, YouTube, etc.
-├── install.sh            # Copies everything into place
-├── .gitignore
-└── README.md
-```
-
 ## Before installing: set your knowledge base path
 
 Several files contain the placeholder `/path/to/knowledge-base`. You need to replace it with your actual knowledge base path before running install.
