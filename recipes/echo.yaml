@@ -65,7 +65,10 @@ instructions: |
   recall
   ```
 
-  You read `lessons/judgment.md` and return its content. If it's empty or has the placeholder text, report "No active judgment yet."
+  You read `lessons/judgment-approved.md` (the human-approved version) and return
+  its content. If `judgment-approved.md` does not exist, fall back to
+  `lessons/judgment.md` (pre-review state). If both are empty or have placeholder
+  text, report "No active judgment yet."
 
   ### 3. consolidate — The dreaming pass
 
@@ -141,7 +144,80 @@ instructions: |
      - Files touched: [judgment.md](./lessons/judgment.md), [patterns.md](./lessons/patterns.md)
      ```
 
-  ### 4. reflect — Search all layers for an answer
+  ### 4. review — Show changes since last human approval
+
+  The main agent calls you with:
+  ```
+  review
+  ```
+
+  This operation makes the human the gate for judgment changes. You compare
+  `judgment.md` (current) against `judgment-approved.md` (last approved version)
+  and show only what changed.
+
+  **How it works:**
+
+  1. Read both `lessons/judgment.md` and `lessons/judgment-approved.md`
+  2. If `judgment-approved.md` does not exist, this is a first review — show all
+     facts as NEW and set the approved file to the current judgment after approval
+  3. Parse facts from both files. Each fact is a line starting with `- [score=`
+  4. Compare fact text (ignoring score) to classify each as:
+     - **NEW**: in current but not in approved
+     - **MODIFIED**: same fact text, different score
+     - **REMOVED**: in approved but not in current
+     - **UNCHANGED**: same fact text, same score
+  5. Format the review output as:
+
+  ```markdown
+  # Echo Review — YYYY-MM-DD
+
+  ## Changes since last review (N new, N removed, N modified)
+
+  ### NEW:
+  - [score=X.XX] <fact text>
+    Type: <type>
+    Context: <context if available>
+    Evidence: <count> entries from <count> sessions
+
+  ### MODIFIED:
+  - [score=X.XX, was Y.YY] <fact text>
+    (score <increased/decreased> — <reason if apparent>)
+
+  ### REMOVED:
+  - [score=X.XX, was Y.YY] <fact text>
+    (<reason — expired, below threshold, etc.>)
+
+  ---
+
+  ## Already approved (N facts, unchanged since last review)
+  - [score=X.XX] <fact text>
+  - ...
+
+  ---
+
+  ## Your options:
+  - `approve all` → copies judgment.md to judgment-approved.md
+  - `reject "<fact text>"` → removes that fact from judgment.md (keeps in raw/ for re-evaluation)
+  - `edit "<fact text>" to "<new text>"` → replaces the fact in judgment.md and copies to approved
+  ```
+
+  6. **On `approve all`**: Copy `judgment.md` to `judgment-approved.md`. Log to log.md.
+  7. **On `reject "<fact>"`**: Remove the matching line from `judgment.md`. Do NOT
+     copy to approved yet — wait for full approval. Log the rejection.
+  8. **On `edit "<old>" to "<new>"`**: Use `sed` or `python3` to directly replace
+     the matching line in `lessons/judgment.md` — do NOT write a new raw entry.
+     The old fact text should be replaced with the new text in-place, keeping
+     the same score. Log the edit to `log.md`. Wait for full approval.
+
+  **Important rules for review:**
+  - Do NOT automatically approve anything. The human must explicitly say "approve all"
+  - If there are no changes since last review, say: "No changes since last review (date). N approved facts unchanged."
+  - The approved file is the source of truth for what gets loaded at session start.
+    If judgment.md has new unapproved facts, they should NOT be loaded until approved.
+  - Only copy to `judgment-approved.md` when the human says `approve all` (or after
+    they've rejected/edited everything they want to change and then say `approve all`)
+
+  ### 5. reflect — Search all layers for an answer
 
   The main agent calls you with:
   ```
@@ -201,8 +277,8 @@ extensions:
   bundled: null
   available_tools: []
 settings:
-  goose_provider: ollama_cloud
-  goose_model: gemma4:31b
+  goose_provider: ollama
+  goose_model: gemma4:31b-cloud
   max_turns: 30
 activities: []
 parameters: []
